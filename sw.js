@@ -47,7 +47,7 @@ self.onmessage = (event) => {
 
 function createStream(port) {
   // ReadableStream is only supported by chrome 52
-  return new ReadableStream({
+  const stream = new ReadableStream({
     start(controller) {
       // When we receive data on the messageChannel, we write
       port.onmessage = ({ data }) => {
@@ -61,6 +61,7 @@ function createStream(port) {
           controller.error('Aborted the download');
           return;
         }
+        port.postMessage({ debug: `isLocked:${stream.locked}` });
         controller.enqueue(data);
       };
     },
@@ -70,6 +71,7 @@ function createStream(port) {
       controller.error('Aborted the download');
     },
   });
+  return stream;
 }
 
 self.onfetch = (event) => {
