@@ -126,7 +126,7 @@ self.onfetch = (event) => {
   }
 
   event.respondWith(new Promise(() => new Response(stream, { headers: responseHeaders }))
-    .then((res) => {
+    .finally((res) => {
       console.log('Done :', res);
       port.postMessage({ debug: 'Download Done' });
     })
