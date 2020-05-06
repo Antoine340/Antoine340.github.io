@@ -90,6 +90,7 @@ self.onfetch = (event) => {
 
   map.delete(url);
 
+  port.postMessage({ debug: 'Download started' });
   // Not comfortable letting any user control all headers
   // so we only copy over the length & disposition
   const responseHeaders = new Headers({
@@ -127,14 +128,7 @@ self.onfetch = (event) => {
     responseHeaders.set('Content-Disposition', `attachment; filename*=UTF-8''${fileName}`);
   }
 
-  event.respondWith(new Promise(() => new Response(stream, { headers: responseHeaders }))
-    .finally((res) => {
-      console.log('Done :', res);
-      port.postMessage({ debug: 'Download Done' });
-    })
-    .catch((err) => {
-      port.postMessage({ debug: `error:${err}` });
-    }));
+  event.respondWith(new Response(stream, { headers: responseHeaders }));
 
   port.postMessage({ debug: 'Download started' });
 };
